@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Regex → Automata Converter</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+<h1>Regex → Automata Converter</h1>
+
+<input id="regex" type="text" placeholder="Enter Regex (example: 0*110*)" />
+
+<button onclick="convert()">Convert</button>
+
+<h2>NFA</h2>
+<img id="nfa" width="500">
+
+<h2>DFA</h2>
+<img id="dfa" width="500">
+
+<h2>Minimized DFA</h2>
+<img id="mindfa" width="500">
+
+<script src="/static/script.js"></script>
+
+</body>
+</html>
