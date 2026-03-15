@@ -1,29 +1,110 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-<title>Regex → Automata Converter</title>
-<link rel="stylesheet" href="/static/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automata & CFG Toolkit</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
 </head>
-
 <body>
+    <div class="background-elements">
+        <div class="glow blob-1"></div>
+        <div class="glow blob-2"></div>
+        <div class="glow blob-3"></div>
+    </div>
 
-<h1>Regex → Automata Converter</h1>
+    <div class="container">
+        <header>
+            <h1>Automata <span class="highlight">&amp;</span> CFG<span class="highlight">.</span></h1>
+            <p>Convert Regular Expressions to Graphs or Simplify Context-Free Grammars</p>
+        </header>
 
-<input id="regex" type="text" placeholder="Enter Regex (example: 0*110*)" />
+        <!-- Main Mode Switcher -->
+        <div class="mode-switcher glass-panel">
+            <div class="toggle-group full-width">
+                <input type="radio" id="mode-regex" name="app-mode" value="regex" checked autocomplete="off" onchange="switchAppMode('regex')">
+                <label for="mode-regex" class="toggle-btn flex-1">Regex Visualizer</label>
 
-<button onclick="convert()">Convert</button>
+                <input type="radio" id="mode-cfg" name="app-mode" value="cfg" autocomplete="off" onchange="switchAppMode('cfg')">
+                <label for="mode-cfg" class="toggle-btn flex-1">CFG Simplifier</label>
+            </div>
+        </div>
 
-<h2>NFA</h2>
-<img id="nfa" width="500">
+        <!-- ========================================== -->
+        <!-- REGEX VISUALIZER APP                       -->
+        <!-- ========================================== -->
+        <div id="app-regex" class="app-section active">
+            <div class="input-section glass-panel">
+                <div class="input-wrapper">
+                    <input type="text" id="regexInput" placeholder="Enter regular expression (e.g., (a+b)a*)">
+                    <button id="generateBtn" onclick="generate()">
+                        <span class="btn-text">Generate Graphs</span>
+                        <span class="loader hidden"></span>
+                    </button>
+                </div>
+            </div>
 
-<h2>DFA</h2>
-<img id="dfa" width="500">
+            <div id="resultsSection" class="results-section hidden">
+                <div class="controls glass-panel">
+                    <h3>Select Diagram to View</h3>
+                    <div class="toggle-group">
+                        <input type="radio" id="nfa-toggle" name="diagram-type" value="nfa" checked autocomplete="off" onchange="switchDiagram('nfa')">
+                        <label for="nfa-toggle" class="toggle-btn">NFA</label>
 
-<h2>Minimized DFA</h2>
-<img id="mindfa" width="500">
+                        <input type="radio" id="dfa-toggle" name="diagram-type" value="dfa" autocomplete="off" onchange="switchDiagram('dfa')">
+                        <label for="dfa-toggle" class="toggle-btn">DFA</label>
 
-<script src="/static/script.js"></script>
+                        <input type="radio" id="mindfa-toggle" name="diagram-type" value="mindfa" autocomplete="off" onchange="switchDiagram('mindfa')">
+                        <label for="mindfa-toggle" class="toggle-btn">Minimized DFA</label>
+                    </div>
+                </div>
 
+                <div class="diagram-display glass-panel">
+                    <div id="nfa-container" class="diagram-container active">
+                        <h4>Non-deterministic Finite Automaton</h4>
+                        <img id="nfa" alt="NFA Diagram">
+                    </div>
+                    
+                    <div id="dfa-container" class="diagram-container">
+                        <h4>Deterministic Finite Automaton</h4>
+                        <img id="dfa" alt="DFA Diagram">
+                    </div>
+                    
+                    <div id="mindfa-container" class="diagram-container">
+                        <h4>Minimized DFA</h4>
+                        <img id="mindfa" alt="Minimized DFA Diagram">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ========================================== -->
+        <!-- CFG SIMPLIFIER APP                         -->
+        <!-- ========================================== -->
+        <div id="app-cfg" class="app-section hidden">
+            <div class="input-section glass-panel">
+                <h3>Enter Context-Free Grammar</h3>
+                <p class="subtitle">Format: S -> AB | a</p>
+                <div class="cfg-input-wrapper">
+                    <textarea id="cfgInput" rows="6" spellcheck="false" placeholder="S -> AB | a&#10;A -> aA | ε&#10;B -> bB | b&#10;C -> d"></textarea>
+                    
+                    <button id="simplifyBtn" onclick="simplifyCFG()" class="btn-full">
+                        <span class="btn-text">Simplify Grammar</span>
+                        <span class="loader hidden"></span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="cfgResultsSection" class="results-section hidden">
+                <!-- Step results will be injected here dynamically -->
+            </div>
+        </div>
+
+    </div>
+
+    <script src="/static/script.js"></script>
 </body>
 </html>

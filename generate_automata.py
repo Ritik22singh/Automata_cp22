@@ -1,34 +1,33 @@
-from flask import Flask, render_template, request, jsonify
-import subprocess
-import shutil
-import os
+from RegexToNfaDfa import *
 
-app = Flask(__name__)
+# read regex
+with open("regex_input.txt") as f:
+    regex = f.read().strip()
 
-@app.route("/")
-def home():
-    return render_template("index.html")
+print("Generating automata for:", regex)
 
+lexer = regexLexer(regex)
+tokenStream = lexer.lexer()
 
-@app.route("/convert", methods=["POST"])
-def convert():
+parser = ParseRegex(tokenStream)
+ast = parser.parse()
 
-    regex = request.json["regex"]
+thompson = ThompsonConstruction(ast)
+nfa = thompson.construct()
 
-    # Run python script that generates automata diagrams
-    subprocess.run(["python","generate_automata.py",regex])
+nfa_dict = nfa.to_dict()
 
-    # copy generated diagrams to static
-    shutil.copy("nfa_graph.png","static/nfa_graph.png")
-    shutil.copy("dfa_graph.png","static/dfa_graph.png")
-    shutil.copy("minimized_dfa_graph.png","static/minimized_dfa_graph.png")
+save_json(nfa_dict,"nfa.json")
+display_and_save_image(nfa_dict,"nfa_graph")
 
-    return jsonify({
-        "nfa":"/static/nfa_graph.png",
-        "dfa":"/static/dfa_graph.png",
-        "mindfa":"/static/minimized_dfa_graph.png"
-    })
+dfa_converter = NFAtoDFA(nfa_dict)
+dfa = dfa_converter.convert()
 
+save_json(dfa,"dfa.json")
+display_and_save_image(dfa,"dfa_graph")
 
-if __name__ == "__main__":
-    app.run(debug=True)
+minimizer = DFAMinimizer(dfa)
+min_dfa = minimizer.minimize()
+
+save_json(min_dfa,"minimized_dfa.json")
+display_and_save_image(min_dfa,"minimized_dfa_graph")
