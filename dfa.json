@@ -2,19 +2,19 @@
     "startingState": "0",
     "0": {
         "isTerminatingState": false,
-        "b": "1",
-        "a": "2"
+        "a": "1"
     },
     "1": {
-        "isTerminatingState": true,
-        "a": "3"
+        "isTerminatingState": false,
+        "c": "2",
+        "b": "3"
     },
     "2": {
-        "isTerminatingState": true,
-        "a": "3"
+        "isTerminatingState": true
     },
     "3": {
-        "isTerminatingState": true,
-        "a": "3"
+        "isTerminatingState": false,
+        "c": "2",
+        "b": "3"
     }
 }

@@ -152,9 +152,24 @@ function simplifyCFG() {
         // Generate Steps Cards Dynamically
         let htmlContent = "";
         
+        // Add Derivation Result if applicable (at the top)
+        if (data.derivation) {
+            const isValid = data.derivation.valid;
+            htmlContent += `
+            <div class="step-card derivation-result ${isValid ? 'valid' : 'invalid'}" style="animation-delay: 0s; border-left: 5px solid ${isValid ? '#10b981' : '#ef4444'}">
+                <h4>🔍 Sequence Derivation Check</h4>
+                <p>Sequence: <code style="background: rgba(0,0,0,0.2); padding: 2px 5px; border-radius: 4px;">${data.derivation.sequence || "(empty)"}</code></p>
+                <div class="status-badge" style="margin-top: 10px; font-weight: bold; color: ${isValid ? '#10b981' : '#ef4444'}">
+                    ${isValid ? '✅ ACCEPTED' : '❌ REJECTED'}
+                </div>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-top: 5px;">${data.derivation.message}</p>
+            </div>
+            `;
+        }
+
         data.steps.forEach((step, index) => {
             htmlContent += `
-            <div class="step-card" style="animation-delay: ${index * 0.15}s">
+            <div class="step-card" style="animation-delay: ${(index + 1) * 0.15}s">
                 <h4>${step.title}</h4>
                 <pre>${step.grammar || "No productions"}</pre>
             </div>
@@ -163,7 +178,7 @@ function simplifyCFG() {
 
         // Add Final Output Card
         htmlContent += `
-        <div class="step-card final-result" style="animation-delay: ${data.steps.length * 0.15}s">
+        <div class="step-card final-result" style="animation-delay: ${(data.steps.length + 1) * 0.15}s">
             <h4>✨ Final Simplified Grammar</h4>
             <pre>${data.final || "No productions"}</pre>
         </div>

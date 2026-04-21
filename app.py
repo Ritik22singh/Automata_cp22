@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 import subprocess
 import shutil
-from cfg_simplifier import simplify_cfg_steps
+from cfg_simplifier import simplify_cfg_steps, check_cfg_derivation
 
 app = Flask(__name__)
 
@@ -36,18 +36,32 @@ def convert():
 
 @app.route("/simplify_cfg", methods=["POST"])
 def simplify_cfg():
-    grammar_str = request.json.get("grammar", "")
+    data = request.json
+    grammar_str = data.get("grammar", "")
+    sequence = data.get("sequence", "")
     
     # Process grammar through the 3 algorithms
     result = simplify_cfg_steps(grammar_str)
     
     if not result.get("success", False):
         return jsonify({"success": False, "error": result.get("error", "Unknown error")}), 400
+    
+    # Optional sequence check (can be from JSON or extracted from grammar_str)
+    derivation_info = check_cfg_derivation(grammar_str, sequence)
+    derivation_result = None
+    if derivation_info:
+        seq, is_valid = derivation_info
+        derivation_result = {
+            "sequence": seq,
+            "valid": is_valid,
+            "message": "String accepted" if is_valid else "String not accepted"
+        }
         
     return jsonify({
         "success": True,
         "steps": result["steps"],
-        "final": result["final"]
+        "final": result["final"],
+        "derivation": derivation_result
     })
 
 if __name__ == "__main__":

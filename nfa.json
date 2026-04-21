@@ -1,50 +1,8 @@
 {
-    "startingState": "4",
-    "0": {
-        "isTerminatingState": false,
-        "a": [
-            "1"
-        ]
-    },
+    "startingState": "0",
     "5": {
         "isTerminatingState": false,
         "epsilon": [
-            "8"
-        ]
-    },
-    "9": {
-        "isTerminatingState": true
-    },
-    "6": {
-        "isTerminatingState": false,
-        "a": [
-            "7"
-        ]
-    },
-    "1": {
-        "isTerminatingState": false,
-        "epsilon": [
-            "5"
-        ]
-    },
-    "4": {
-        "isTerminatingState": false,
-        "epsilon": [
-            "0",
-            "2"
-        ]
-    },
-    "8": {
-        "isTerminatingState": false,
-        "epsilon": [
-            "9",
-            "6"
-        ]
-    },
-    "7": {
-        "isTerminatingState": false,
-        "epsilon": [
-            "9",
             "6"
         ]
     },
@@ -54,10 +12,39 @@
             "3"
         ]
     },
+    "6": {
+        "isTerminatingState": false,
+        "c": [
+            "7"
+        ]
+    },
     "3": {
         "isTerminatingState": false,
         "epsilon": [
+            "2",
             "5"
+        ]
+    },
+    "7": {
+        "isTerminatingState": true
+    },
+    "0": {
+        "isTerminatingState": false,
+        "a": [
+            "1"
+        ]
+    },
+    "4": {
+        "isTerminatingState": false,
+        "epsilon": [
+            "2",
+            "5"
+        ]
+    },
+    "1": {
+        "isTerminatingState": false,
+        "epsilon": [
+            "4"
         ]
     }
 }

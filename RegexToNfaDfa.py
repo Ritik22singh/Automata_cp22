@@ -427,7 +427,8 @@ class ThompsonConstruction:
 
 
 import graphviz
-from IPython.display import SVG, display
+import matplotlib
+matplotlib.use('Agg')  # non-interactive backend for headless/server use
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 
@@ -501,14 +502,13 @@ def display_and_save_image(nfa,fileName):
         dot=draw_dfa(nfa)
     dot.format = 'png'
     dot.render(fileName)
-    #svg = SVG(data=dot.pipe())._repr_svg_()
-    # display nfa_graph.png
-
-    img=mpimg.imread(fileName+'.png')
-    imgplot = plt.imshow(img)
-    plt.axis('off')
-    plt.figure(figsize=(15, 15))
-    plt.show()
+    # Save image to disk (no GUI display needed when running via Flask)
+    img = mpimg.imread(fileName + '.png')
+    fig, ax = plt.subplots(figsize=(15, 15))
+    ax.imshow(img)
+    ax.axis('off')
+    fig.savefig(fileName + '.png', bbox_inches='tight', pad_inches=0)
+    plt.close(fig)
 
 
 

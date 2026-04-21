@@ -89,10 +89,10 @@
                 <h3>Enter Context-Free Grammar</h3>
                 <p class="subtitle">Format: S -> AB | a</p>
                 <div class="cfg-input-wrapper">
-                    <textarea id="cfgInput" rows="6" spellcheck="false" placeholder="S -> AB | a&#10;A -> aA | ε&#10;B -> bB | b&#10;C -> d"></textarea>
+                    <textarea id="cfgInput" rows="8" spellcheck="false" placeholder="S -> AB | a&#10;A -> aA | ε&#10;&#10;(Separated by newline, add sequence here: )&#10;a a b"></textarea>
                     
                     <button id="simplifyBtn" onclick="simplifyCFG()" class="btn-full">
-                        <span class="btn-text">Simplify Grammar</span>
+                        <span class="btn-text">Simplify & Check Derivation</span>
                         <span class="loader hidden"></span>
                     </button>
                 </div>

@@ -447,3 +447,32 @@ textarea:focus {
     color: var(--primary);
     font-size: 1.3rem;
 }
+
+/* Derivation Result Styles */
+.derivation-result {
+    transition: all 0.3s ease;
+    background: rgba(15, 23, 42, 0.8);
+}
+
+.derivation-result.valid {
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    background: rgba(16, 185, 129, 0.05);
+}
+
+.derivation-result.invalid {
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    background: rgba(239, 68, 68, 0.05);
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 0.4rem 1rem;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.2);
+    font-size: 0.9rem;
+    letter-spacing: 0.05em;
+}
+
+.sequence-input-wrapper input {
+    width: 100%;
+}

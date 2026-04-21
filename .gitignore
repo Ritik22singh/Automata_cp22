@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pdb
+
+# Virtual environment
+venv/
+.env
+
+# Temp / generated files
+test_graph
+test_graph.png
+regex_input.txt
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db

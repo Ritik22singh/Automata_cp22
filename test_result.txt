@@ -1,0 +1,15 @@
+Testing CFG Simplification and CYK...
+Grammar 1 Simplified:
+B -> b
+A -> a
+S -> a B | A B
+Check 'a b': True
+Check 'a c': False
+
+Grammar 2 Simplified:
+Term -> Term * Factor | id
+Factor -> id
+Expr -> Expr + Term | Term * Factor | id
+Check 'id + id': True
+Check 'id * id': True
+Check 'id +': False
