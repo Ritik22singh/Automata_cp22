@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 import subprocess
 import shutil
+import sys
 from cfg_simplifier import simplify_cfg_steps, check_cfg_derivation
 
 app = Flask(__name__)
@@ -16,12 +17,19 @@ def convert():
     regex = request.json["regex"]
 
     # save regex for generator
-    with open("regex_input.txt","w") as f:
+    with open("regex_input.txt","w", encoding="utf-8") as f:
         f.write(regex)
 
-    # Execute Jupyter Notebook instead of a separate python script
-    # and wait for it to finish creating the NFA/DFA diagram assets
-    subprocess.run(["jupyter", "nbconvert", "--execute", "--to", "notebook", "--inplace", "RegexToNfaDfa.ipynb"])
+    # Use sys.executable so we always use the venv's jupyter, not system PATH
+    result = subprocess.run(
+        [sys.executable, "-m", "jupyter", "nbconvert",
+         "--execute", "--to", "notebook", "--inplace", "RegexToNfaDfa.ipynb"],
+        capture_output=True, text=True
+    )
+
+    if result.returncode != 0:
+        print("nbconvert STDERR:", result.stderr)
+        return jsonify({"error": "Notebook execution failed", "details": result.stderr}), 500
 
     # move new diagrams to static
     shutil.copy("nfa_graph.png","static/nfa_graph.png")
