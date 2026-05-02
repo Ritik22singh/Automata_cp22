@@ -1,50 +1,62 @@
 {
-    "startingState": "0",
-    "5": {
-        "isTerminatingState": false,
-        "epsilon": [
-            "6"
-        ]
-    },
-    "2": {
-        "isTerminatingState": false,
-        "b": [
-            "3"
-        ]
-    },
-    "6": {
-        "isTerminatingState": false,
-        "c": [
-            "7"
-        ]
-    },
-    "3": {
-        "isTerminatingState": false,
-        "epsilon": [
-            "2",
-            "5"
-        ]
-    },
-    "7": {
+    "startingState": "8",
+    "9": {
         "isTerminatingState": true
     },
     "0": {
         "isTerminatingState": false,
-        "a": [
+        "A": [
             "1"
         ]
     },
     "4": {
         "isTerminatingState": false,
         "epsilon": [
-            "2",
-            "5"
+            "0",
+            "2"
         ]
     },
     "1": {
         "isTerminatingState": false,
         "epsilon": [
+            "5"
+        ]
+    },
+    "5": {
+        "isTerminatingState": false,
+        "epsilon": [
+            "9"
+        ]
+    },
+    "8": {
+        "isTerminatingState": false,
+        "epsilon": [
+            "6",
             "4"
+        ]
+    },
+    "2": {
+        "isTerminatingState": false,
+        "B": [
+            "3"
+        ]
+    },
+    "6": {
+        "isTerminatingState": false,
+        "C": [
+            "7"
+        ]
+    },
+    "3": {
+        "isTerminatingState": false,
+        "epsilon": [
+            "5"
+        ]
+    },
+    "7": {
+        "isTerminatingState": false,
+        "epsilon": [
+            "9"
         ]
     }
 }

@@ -20,18 +20,26 @@ def convert():
     with open("regex_input.txt","w", encoding="utf-8") as f:
         f.write(regex)
 
-    # Use sys.executable so we always use the venv's jupyter, not system PATH
+    # Run new_automata_logic.py directly (fixed version, avoids notebook bugs)
     result = subprocess.run(
-        [sys.executable, "-m", "jupyter", "nbconvert",
-         "--execute", "--to", "notebook", "--inplace", "RegexToNfaDfa.ipynb"],
+        [sys.executable, "new_automata_logic.py"],
         capture_output=True, text=True
     )
 
     if result.returncode != 0:
-        print("nbconvert STDERR:", result.stderr)
-        return jsonify({"error": "Notebook execution failed", "details": result.stderr}), 500
+        print("Script STDERR:", result.stderr)
+        print("Script STDOUT:", result.stdout)
+        return jsonify({"error": "Automata generation failed", "details": result.stderr or result.stdout}), 500
 
     # move new diagrams to static
+    import os
+    missing = []
+    for fname in ["nfa_graph.png", "dfa_graph.png", "minimized_dfa_graph.png"]:
+        if not os.path.exists(fname):
+            missing.append(fname)
+    if missing:
+        return jsonify({"error": f"Missing output files: {missing}"}), 500
+
     shutil.copy("nfa_graph.png","static/nfa_graph.png")
     shutil.copy("dfa_graph.png","static/dfa_graph.png")
     shutil.copy("minimized_dfa_graph.png","static/minimized_dfa_graph.png")

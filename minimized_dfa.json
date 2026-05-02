@@ -5,11 +5,8 @@
     },
     "1": {
         "isTerminatingState": false,
-        "a": "2"
-    },
-    "2": {
-        "isTerminatingState": false,
-        "c": "0",
-        "b": "2"
+        "B": "0",
+        "A": "0",
+        "C": "0"
     }
 }

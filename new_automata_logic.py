@@ -6,6 +6,14 @@ import graphviz
 # 1. PARSER & POSTFIX CONVERSION
 # ==========================================
 
+# Operators recognised by the engine.
+# Every character NOT in this set is treated as a literal symbol.
+OPERATORS = set('|+*?.()')
+
+def is_literal(c):
+    """Return True for any character that is a regex literal (not an operator)."""
+    return c not in OPERATORS
+
 def insert_explicit_concat(regex):
     """
     Inserts a '.' character for implicit concatenation.
@@ -19,36 +27,40 @@ def insert_explicit_concat(regex):
         res.append(c)
         if i + 1 < len(regex):
             c1, c2 = regex[i], regex[i+1]
-            # Conditions for concatenation:
-            # c1 is a character, '*', or ')'
-            # c2 is a character or '('
-            if (c1.isalnum() or c1 in '*)+') and (c2.isalnum() or c2 == '('):
-                # Only insert concat if it's not a union symbol
-                if c1 != '+' and c2 != '+':
-                    res.append('.')
+            # Insert explicit '.' for concatenation between:
+            #   left  : literal symbol  OR  postfix quantifier (* ? +)  OR  close-paren )
+            #   right : literal symbol  OR  open-paren (
+            # Do NOT insert when c1/c2 is a binary operator (| or +)
+            left_ok  = is_literal(c1) or c1 in '*?)'  
+            right_ok = is_literal(c2) or c2 == '('
+            not_union = c1 not in '|' and c2 not in '|'
+            if left_ok and right_ok and not_union:
+                res.append('.')
     return ''.join(res)
 
 def get_precedence(op):
-    if op == '*': return 3
-    if op == '.': return 2
-    if op == '+': return 1
+    if op in ('*', '?'): return 3  # postfix unary quantifiers
+    if op == '.':        return 2  # concatenation
+    if op in ('|', '+'): return 1  # union / alternation
     return 0
 
 def to_postfix(regex):
-    """ Converts infix regex with explicit conctenation to postfix notation. """
+    """Shunting-yard: converts infix regex (with explicit '.') to postfix."""
     postfix = []
     stack = []
     for c in regex:
-        if c.isalnum() or c == 'ε':
+        if is_literal(c):          # any non-operator char → output immediately
             postfix.append(c)
         elif c == '(':
             stack.append(c)
         elif c == ')':
             while stack and stack[-1] != '(':
                 postfix.append(stack.pop())
-            stack.pop() # Remove '('
-        else: # c is an operator
-            while stack and get_precedence(stack[-1]) >= get_precedence(c):
+            if stack:              # safely discard the matching '('
+                stack.pop()
+        else:                      # c is an operator: | + * ? .
+            # Shunting-yard rule: never pop '(' for operators
+            while stack and stack[-1] != '(' and get_precedence(stack[-1]) >= get_precedence(c):
                 postfix.append(stack.pop())
             stack.append(c)
     while stack:
@@ -89,42 +101,46 @@ def build_nfa(postfix):
         return NFA(start, end)
 
     for c in postfix:
-        if c.isalnum() or c == 'ε':
+        if is_literal(c):          # any non-operator char → single-symbol NFA
             start = State()
             end = State()
             start.add_transition(c, end)
             stack.append(NFA(start, end))
-        
-        elif c == '.':
+
+        elif c == '.':             # concatenation
             nfa2 = stack.pop()
             nfa1 = stack.pop()
-            # Connect nfa1 end to nfa2 start
             nfa1.end.add_transition('ε', nfa2.start)
             stack.append(NFA(nfa1.start, nfa2.end))
-            
-        elif c == '+':
+
+        elif c in ('|', '+'):      # union / alternation
             nfa2 = stack.pop()
             nfa1 = stack.pop()
             start = State()
-            end = State()
-            
+            end   = State()
             start.add_transition('ε', nfa1.start)
             start.add_transition('ε', nfa2.start)
             nfa1.end.add_transition('ε', end)
             nfa2.end.add_transition('ε', end)
-            
             stack.append(NFA(start, end))
-            
-        elif c == '*':
-            nfa1 = stack.pop()
+
+        elif c == '*':             # Kleene star  (zero or more)
+            nfa1  = stack.pop()
             start = State()
-            end = State()
-            
+            end   = State()
             start.add_transition('ε', nfa1.start)
             start.add_transition('ε', end)
             nfa1.end.add_transition('ε', nfa1.start)
             nfa1.end.add_transition('ε', end)
-            
+            stack.append(NFA(start, end))
+
+        elif c == '?':             # zero or one
+            nfa1  = stack.pop()
+            start = State()
+            end   = State()
+            start.add_transition('ε', nfa1.start)  # take the branch
+            start.add_transition('ε', end)          # or skip it
+            nfa1.end.add_transition('ε', end)
             stack.append(NFA(start, end))
 
     # Error handling for empty / invalid postfix pops
