@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Antigravity Automata IDE</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='ide_style.css') }}?v=5">
+    <!-- Load a nice font -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="topbar">
+        <div class="logo">
+            <span class="logo-icon">🪐</span>
+            <h1>Antigravity Automata IDE</h1>
+            <a href="/" style="margin-left: 20px; font-size: 13px; color: #61afef; text-decoration: none; border: 1px solid #61afef; padding: 4px 10px; border-radius: 4px;">← Back to Toolkit</a>
+            
+            <div style="margin-left: 30px; display: flex; align-items: center; gap: 10px;">
+                <select id="language-select" class="lang-select">
+                    <option value="c">C-like</option>
+                    <option value="java">Java-like</option>
+                    <option value="python">Python-like</option>
+                </select>
+                <button id="run-btn" class="run-btn">▶ Run</button>
+            </div>
+        </div>
+        <div class="status-bar">
+            <span id="status-tokens" class="badge">Tokens: 0</span>
+            <span id="status-errors" class="badge error">Errors: 0</span>
+            <span id="status-indicator" class="indicator online">● Live</span>
+        </div>
+    </header>
+
+    <div class="dashboard">
+        <!-- COLUMN 1: Input & Parse Tree -->
+        <div class="col col-left">
+            <div class="panel flex-1">
+                <div class="panel-header">
+                    <h2>Input Editor</h2>
+                    <span class="subtitle">Write code</span>
+                </div>
+                <div class="editor-container">
+                    <textarea id="code-input" spellcheck="false" placeholder="int main() {&#10;    return 0;&#10;}"></textarea>
+                </div>
+            </div>
+            
+            <div class="panel flex-1 mt-3">
+                <div class="panel-header">
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <h2>Syntax Checker & Parse Tree</h2>
+                        <span id="syntax-status" class="badge" style="display: none;"></span>
+                    </div>
+                    <span class="subtitle">CFG-based structural validation</span>
+                </div>
+                <div class="panel-content tree-view" id="parse-tree">
+                    <div class="empty-state">Start typing to build parse tree...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- COLUMN 2: Highlighter & Token Stream -->
+        <div class="col col-mid">
+            <div class="panel flex-1">
+                <div class="panel-header">
+                    <h2>Syntax Highlighter</h2>
+                    <span class="subtitle">Live colored output & errors</span>
+                </div>
+                <div class="editor-container highlighter-container">
+                    <pre id="code-highlighter"></pre>
+                </div>
+            </div>
+
+            <div class="panel flex-1 mt-3">
+                <div class="panel-header">
+                    <h2>Token Stream</h2>
+                    <span class="subtitle">Raw parser input</span>
+                </div>
+                <div class="panel-content token-stream" id="token-stream">
+                    <div class="empty-state">No tokens yet...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- COLUMN 3: Symbol Table & Console -->
+        <div class="col col-right">
+            <div class="panel flex-1">
+                <div class="panel-header">
+                    <h2>Live Symbol Table</h2>
+                    <span class="subtitle">Semantic Analysis</span>
+                </div>
+                <div class="panel-content symbol-table-panel" id="symbol-table">
+                    <div class="empty-state">No symbols declared...</div>
+                </div>
+            </div>
+
+            <div class="panel flex-1 mt-3 terminal-panel">
+                <div class="panel-header">
+                    <h2>Console Output</h2>
+                    <span class="subtitle">Interpreter Results</span>
+                </div>
+                <div class="panel-content console-content" id="console-output">
+                    <div class="empty-state">Click Run to execute code...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOTTOM: PDA Bracket Matcher & Semantic Logs -->
+        <div class="panel bottom-panel">
+            <div class="panel-header">
+                <h2>Analysis Logs</h2>
+                <span class="subtitle">Bracket matcher & Semantic errors</span>
+            </div>
+            <div class="panel-content bracket-log" id="bracket-log">
+                <div class="empty-state">Logs empty...</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='ide_app.js') }}?v=5"></script>
+</body>
+</html>
